@@ -148,7 +148,54 @@ class StringUtilTest {
 
     @Test
     void testGetPart() {
-        // Should be added
+        /*
+         * Caso de Teste 1: Aborda a primeira decisaõ da linha 81 e 86
+         * em situação para TRUE e a segunda decisão da linha 81 e 88
+         * em situação para FALSE
+         * */
+        assertEquals("la", StringUtil.getPart("Ola", 0, false));
+
+        /*
+         * Caso de Teste 2: Aborda a primeira decisão da linha 81 e 86 em situação
+         * para FALSE e primeira decisão da linha 88 em situação de FALSE e
+         * segunda decisão da linha 88 em situação de TRUE
+         * */
+        assertEquals("", StringUtil.getPart("Ola", 10, false));
+
+        /*
+         * Caso de Teste 3: Aborda a segunda decisão da linha 81 e a
+         * terceira decisão da linha 88 em situação para TRUE e aborda
+         * a primeira decisão da linha 88 em situação para TRUE e segunda decisão
+         * da linha 88 em situação de FALSE
+         * */
+        assertEquals("st ", StringUtil.getPart("{test }", 2, true));
+
+        /*
+         * Caso de Teste 4: Aborda a primeira decisão da linha 92 em situação
+         * de TRUE e em situação de FALSE também e aborda a segunda decisão da linha 92 em situação de
+         * FALSE e da linha 94 em situação de TRUE
+         * */
+        assertEquals("st", StringUtil.getPart("{test }", 2, false));
+
+        /*
+         * Caso de Teste 5: Aborda a primeira condição da linha 81 e 86 em situação
+         * de de TRUE
+         * */
+        assertThrows(StringIndexOutOfBoundsException.class, () -> {
+            StringUtil.getPart("Ol{a Mundo}", -2, true);
+        });
+
+        /*
+         * Caso de Teste 6: Aborda a segunda decisão da linha 92 na situação de
+         * TRUE
+         * */
+        assertEquals("Ola", StringUtil.getPart(" Ola}", 0, false));
+
+        /*
+         * Caso de Teste 7: Aborda a primeira decisão da linha 94 na situação
+         * de FALSE
+         * */
+        assertEquals("ol", StringUtil.getPart("Hol}a Vibranium", 0, false));
     }
 
     @Test
