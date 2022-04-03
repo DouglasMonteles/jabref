@@ -15,8 +15,22 @@ public class BiodiversityLibrary {
     private static final Logger LOGGER = LoggerFactory.getLogger(BiodiversityLibrary.class);
 
     private static final String API_COLLECTION_URL = "https://www.biodiversitylibrary.org/api3?op=GetCollections&format=json&apikey=";
+    private static final String API_AUTHOR_URL = "https://www.biodiversitylibrary.org/api3?op=GetAuthorMetadata&";
     private static final String API_KEY = "35c3b825-b2a5-4fd3-8c58-e16a6862a9fe";
 
+    public ResponseAuthorMetadata getAuthorMetadata(int id, char pubs) throws Exception {
+        var response = this.fetchData(API_AUTHOR_URL + "id=" + id + "&pubs=" + pubs + "&format=json&apikey=");
+        LOGGER.info("response: " + response.toString());
+
+        var authors = new Gson().fromJson(response.toString(), ResponseAuthorMetadata.class);
+
+        if ((authors != null) && authors.getStatus().equals("ok")) {
+            LOGGER.info("getAuthorMetadata: " + authors.toString());
+            return authors;
+        }
+
+        return null;
+    }
 
     public ResponseCollection getCollections() throws Exception {
         var response = this.fetchData(API_COLLECTION_URL);
@@ -56,30 +70,21 @@ public class BiodiversityLibrary {
 class ResponseCollection {
 
     private String Status;
-    private List<Collection> Result = new ArrayList<>();
+    private String ErrorMessage;
+    private final List<Collection> Result = new ArrayList<>();
 
-    public ResponseCollection() {
-    }
-
-    public ResponseCollection(String status) {
-        super();
-        Status = status;
-    }
+    public ResponseCollection() {}
 
     public String getStatus() {
         return Status;
     }
 
-    public void setStatus(String status) {
-        Status = status;
+    public String getErrorMessage() {
+        return ErrorMessage;
     }
 
     public List<Collection> getResult() {
         return Result;
-    }
-
-    public void setResult(List<Collection> result) {
-        Result = result;
     }
 
     @Override
@@ -98,41 +103,202 @@ class Collection {
     public Collection() {
     }
 
-    public Collection(Integer collectionID, String collectionName, String collectionDescription) {
-        super();
-        CollectionID = collectionID;
-        CollectionName = collectionName;
-        CollectionDescription = collectionDescription;
-    }
-
     public Integer getCollectionID() {
         return CollectionID;
-    }
-
-    public void setCollectionID(Integer collectionID) {
-        CollectionID = collectionID;
     }
 
     public String getCollectionName() {
         return CollectionName;
     }
 
-    public void setCollectionName(String collectionName) {
-        CollectionName = collectionName;
-    }
-
     public String getCollectionDescription() {
         return CollectionDescription;
-    }
-
-    public void setCollectionDescription(String collectionDescription) {
-        CollectionDescription = collectionDescription;
     }
 
     @Override
     public String toString() {
         return "Collection [CollectionID=" + CollectionID + ", CollectionName=" + CollectionName
                + ", CollectionDescription=" + CollectionDescription + "]";
+    }
+
+}
+
+class ResponseAuthorMetadata {
+
+    private String Status;
+    private String ErrorMessage;
+    private final List<Author> Result = new ArrayList<>();
+
+    public ResponseAuthorMetadata() {
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public String getErrorMessage() {
+        return ErrorMessage;
+    }
+
+    public List<Author> getResult() {
+        return Result;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseAuthorMetadata [Status=" + Status + ", ErrorMessage=" + ErrorMessage + ", Result=" + Result + "]";
+    }
+
+}
+
+class Author {
+
+    private String AuthorID;
+    private String Name;
+    private String Unit;
+    private String CreatorUrl;
+    private String CreationDate;
+
+    private final List<Identifier> Identifiers = new ArrayList<>();
+    private final List<Author> Publications = new ArrayList<>();
+
+    public Author() {
+    }
+
+    public String getAuthorID() {
+        return AuthorID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public String getUnit() {
+        return Unit;
+    }
+
+    public String getCreatorUrl() {
+        return CreatorUrl;
+    }
+
+    public String getCreationDate() {
+        return CreationDate;
+    }
+
+    public List<Identifier> getIdentifiers() {
+        return Identifiers;
+    }
+
+    public List<Author> getPublications() {
+        return Publications;
+    }
+
+    @Override
+    public String toString() {
+        return "Author [AuthorID=" + AuthorID + ", Name=" + Name + ", Unit=" + Unit + ", CreatorUrl=" + CreatorUrl + ", CreationDate=" + CreationDate + ", Identifiers=" + Identifiers + ", Publications=" + Publications + "]";
+    }
+
+}
+
+class Identifier {
+
+    private String IdentifierName;
+    private String IdentifierValue;
+
+    public Identifier() {}
+
+    public String getIdentifierName() {
+        return IdentifierName;
+    }
+
+    public String getIdentifierValue() {
+        return IdentifierValue;
+    }
+
+    @Override
+    public String toString() {
+        return "Identifier [IdentifierName=" + IdentifierName + ", IdentifierValue=" + IdentifierValue + "]";
+    }
+
+}
+
+class Publication {
+
+    private String BHLType;
+    private String FoundIn;
+    private Integer TitleID;
+    private String TitleUrl;
+    private String MaterialType;
+    private String PublisherPlace;
+    private String PublisherName;
+    private String PublicationDate;
+    private final List<AuthorName> Authors = new ArrayList<>();
+    private String Genre;
+    private String Title;
+
+    public Publication() {
+    }
+
+    class AuthorName {
+
+        private String Name;
+
+        public AuthorName() {
+        }
+
+        public String getName() {
+            return Name;
+        }
+
+    }
+
+    public String getBHLType() {
+        return BHLType;
+    }
+
+    public String getFoundIn() {
+        return FoundIn;
+    }
+
+    public Integer getTitleID() {
+        return TitleID;
+    }
+
+    public String getTitleUrl() {
+        return TitleUrl;
+    }
+
+    public String getMaterialType() {
+        return MaterialType;
+    }
+
+    public String getPublisherPlace() {
+        return PublisherPlace;
+    }
+
+    public String getPublisherName() {
+        return PublisherName;
+    }
+
+    public String getPublicationDate() {
+        return PublicationDate;
+    }
+
+    public List<AuthorName> getAuthors() {
+        return Authors;
+    }
+
+    public String getGenre() {
+        return Genre;
+    }
+
+    public String getTitle() {
+        return Title;
+    }
+
+    @Override
+    public String toString() {
+        return "Publication [BHLType=" + BHLType + ", FoundIn=" + FoundIn + ", TitleID=" + TitleID + ", TitleUrl=" + TitleUrl + ", MaterialType=" + MaterialType + ", PublisherPlace=" + PublisherPlace + ", PublisherName=" + PublisherName + ", PublicationDate=" + PublicationDate + ", Authors=" + Authors + ", Genre=" + Genre + ", Title=" + Title + "]";
     }
 
 }

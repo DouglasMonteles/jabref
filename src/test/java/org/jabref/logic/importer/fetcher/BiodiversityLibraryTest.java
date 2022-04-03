@@ -44,7 +44,17 @@ class BiodiversityLibraryTest {
         var collections = finder.getCollections();
 
         assertEquals("ok", collections.getStatus());
+        assertEquals("", collections.getErrorMessage());
         assertFalse(collections.getResult().isEmpty());
+    }
+
+    @Test
+    void getAuthorsShouldReturnObjWithMetadataTest() throws Exception {
+        var authors = finder.getAuthorMetadata(87509, 't');
+
+        assertEquals("ok", authors.getStatus());
+        assertEquals("", authors.getErrorMessage());
+        assertFalse(authors.getResult().isEmpty());
     }
 
 }
