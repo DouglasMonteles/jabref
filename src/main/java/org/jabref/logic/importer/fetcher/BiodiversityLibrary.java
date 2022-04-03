@@ -22,10 +22,8 @@ public class BiodiversityLibrary {
         var response = this.fetchData(API_COLLECTION_URL);
         var collections = new Gson().fromJson(response.toString(), ResponseCollection.class);
 
-        LOGGER.info(collections.toString());
-
         if ((collections != null) && collections.getStatus().equals("ok")) {
-            LOGGER.info("Collections: " + collections.toString());
+            LOGGER.info("getCollections: " + collections.toString());
             return collections;
         }
 
