@@ -66,7 +66,11 @@ class BiodiversityLibraryTest {
 
     @Test
     void getSubjectMetadataShouldReturnObjWithMetadataTest() throws Exception {
+        var subjects = finder.getSubjectMetadata("water", 't');
 
+        assertEquals("ok", subjects.getStatus());
+        assertEquals("", subjects.getErrorMessage());
+        assertFalse(subjects.getResult().isEmpty());
     }
 
     @Test
