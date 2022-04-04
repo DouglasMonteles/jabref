@@ -16,17 +16,28 @@ public class BiodiversityLibrary {
 
     private static final String API_COLLECTION_URL = "https://www.biodiversitylibrary.org/api3?op=GetCollections&format=json&apikey=";
     private static final String API_AUTHOR_URL = "https://www.biodiversitylibrary.org/api3?op=GetAuthorMetadata&";
+    private static final String API_SUBJECT_URL = "https://www.biodiversitylibrary.org/api3?op=GetSubjectMetadata&";
     private static final String API_KEY = "35c3b825-b2a5-4fd3-8c58-e16a6862a9fe";
 
     public ResponseAuthorMetadata getAuthorMetadata(int id, char pubs) throws Exception {
         var response = this.fetchData(API_AUTHOR_URL + "id=" + id + "&pubs=" + pubs + "&format=json&apikey=");
-        LOGGER.info("response: " + response.toString());
-
         var authors = new Gson().fromJson(response.toString(), ResponseAuthorMetadata.class);
 
         if ((authors != null) && authors.getStatus().equals("ok")) {
             LOGGER.info("getAuthorMetadata: " + authors.toString());
             return authors;
+        }
+
+        return null;
+    }
+
+    public ResponseSubjectMetadata getSubjectMetadata(String subject, char pubs) throws Exception {
+        var response = this.fetchData(API_SUBJECT_URL + "subject=" + subject + "&pubs=" + pubs + "&format=json&apikey=");
+        var subjects = new Gson().fromJson(response.toString(), ResponseSubjectMetadata.class);
+
+        if ((subjects != null) && subjects.getStatus().equals("ok")) {
+            LOGGER.info("getSubjectMetadata: " + subjects.toString());
+            return subjects;
         }
 
         return null;
@@ -299,6 +310,63 @@ class Publication {
     @Override
     public String toString() {
         return "Publication [BHLType=" + BHLType + ", FoundIn=" + FoundIn + ", TitleID=" + TitleID + ", TitleUrl=" + TitleUrl + ", MaterialType=" + MaterialType + ", PublisherPlace=" + PublisherPlace + ", PublisherName=" + PublisherName + ", PublicationDate=" + PublicationDate + ", Authors=" + Authors + ", Genre=" + Genre + ", Title=" + Title + "]";
+    }
+
+}
+
+class ResponseSubjectMetadata {
+
+    private String Status;
+    private String ErrorMessage;
+    private final List<SubjectMetadata> Result = new ArrayList<>();
+
+    public ResponseSubjectMetadata() {
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public String getErrorMessage() {
+        return ErrorMessage;
+    }
+
+    public List<SubjectMetadata> getResult() {
+        return Result;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseSubjectMetadata [Status=" + Status + ", ErrorMessage=" + ErrorMessage + ", Result=" + Result + "]";
+    }
+
+}
+
+class SubjectMetadata {
+
+    private String SubjectText;
+    private String CreationDate;
+
+    private final List<Publication> Publications = new ArrayList<>();
+
+    public SubjectMetadata() {
+    }
+
+    public String getSubjectText() {
+        return SubjectText;
+    }
+
+    public String getCreationDate() {
+        return CreationDate;
+    }
+
+    public List<Publication> getPublications() {
+        return Publications;
+    }
+
+    @Override
+    public String toString() {
+        return "SubjectMetadata [SubjectText=" + SubjectText + ", CreationDate=" + CreationDate + ", Publications=" + Publications + "]";
     }
 
 }
