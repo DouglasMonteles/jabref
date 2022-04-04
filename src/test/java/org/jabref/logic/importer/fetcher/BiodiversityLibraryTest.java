@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @FetcherTest
 class BiodiversityLibraryTest {
@@ -103,12 +102,13 @@ class BiodiversityLibraryTest {
 
     @Test
     void authorSearchShouldReturnObjWithMetadataTest() throws Exception {
-        fail();
-    }
+        String authorName = "dimmock";
 
-    @Test
-    void authorSearchShouldThrowExceptionTest() throws Exception {
-        fail();
+        var authors = finder.authorSearch(authorName);
+
+        assertEquals("ok", authors.getStatus());
+        assertEquals("", authors.getErrorMessage());
+        assertFalse(authors.getResult().isEmpty());
     }
 
 }
