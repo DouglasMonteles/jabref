@@ -17,6 +17,7 @@ public class BiodiversityLibrary {
     private static final String API_COLLECTION_URL = "https://www.biodiversitylibrary.org/api3?op=GetCollections&format=json&apikey=";
     private static final String API_AUTHOR_URL = "https://www.biodiversitylibrary.org/api3?op=GetAuthorMetadata&";
     private static final String API_SUBJECT_URL = "https://www.biodiversitylibrary.org/api3?op=GetSubjectMetadata&";
+    private static final String API_PUBLICATION_SEARCH_URL = "https://www.biodiversitylibrary.org/api3?op=PublicationSearch&";
     private static final String API_KEY = "35c3b825-b2a5-4fd3-8c58-e16a6862a9fe";
 
     public ResponseAuthorMetadata getAuthorMetadata(int id, char pubs) throws Exception {
@@ -50,6 +51,22 @@ public class BiodiversityLibrary {
         if ((collections != null) && collections.getStatus().equals("ok")) {
             LOGGER.info("getCollections: " + collections.toString());
             return collections;
+        }
+
+        return null;
+    }
+
+    public ResponsePublicationSearch publicationSearch(String searchTerm, char searchType,
+                                                       int page, int pageSize)
+        throws Exception {
+        var response = this.fetchData(API_PUBLICATION_SEARCH_URL
+                                      + "searchterm=" + searchTerm + "&searchtype=" + searchType + "&page="
+                                      + page + "&pageSize=" + pageSize + "&format=json&apikey=");
+        var publications = new Gson().fromJson(response.toString(), ResponsePublicationSearch.class);
+
+        if ((publications != null) && publications.getStatus().equals("ok")) {
+            LOGGER.info("getCollections: " + publications.toString());
+            return publications;
         }
 
         return null;
@@ -250,19 +267,6 @@ class Publication {
     public Publication() {
     }
 
-    class AuthorName {
-
-        private String Name;
-
-        public AuthorName() {
-        }
-
-        public String getName() {
-            return Name;
-        }
-
-    }
-
     public String getBHLType() {
         return BHLType;
     }
@@ -310,6 +314,19 @@ class Publication {
     @Override
     public String toString() {
         return "Publication [BHLType=" + BHLType + ", FoundIn=" + FoundIn + ", TitleID=" + TitleID + ", TitleUrl=" + TitleUrl + ", MaterialType=" + MaterialType + ", PublisherPlace=" + PublisherPlace + ", PublisherName=" + PublisherName + ", PublicationDate=" + PublicationDate + ", Authors=" + Authors + ", Genre=" + Genre + ", Title=" + Title + "]";
+    }
+
+}
+
+class AuthorName {
+
+    private String Name;
+
+    public AuthorName() {
+    }
+
+    public String getName() {
+        return Name;
     }
 
 }
@@ -367,6 +384,107 @@ class SubjectMetadata {
     @Override
     public String toString() {
         return "SubjectMetadata [SubjectText=" + SubjectText + ", CreationDate=" + CreationDate + ", Publications=" + Publications + "]";
+    }
+
+}
+
+class ResponsePublicationSearch {
+
+    private String Status;
+    private String ErrorMessage;
+    private final List<PublicationSearch> Result = new ArrayList<>();
+
+    public ResponsePublicationSearch() {
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public String getErrorMessage() {
+        return ErrorMessage;
+    }
+
+    public List<PublicationSearch> getResult() {
+        return Result;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponsePublicationSearch [Status=" + Status + ", ErrorMessage=" + ErrorMessage + ", Result=" + Result + "]";
+    }
+
+}
+
+class PublicationSearch {
+
+    private String BHLType;
+    private String FoundIn;
+    private String Volume;
+    private final List<AuthorName> Authors = new ArrayList<>();
+    private String PartUrl;
+    private String PartID;
+    private String Genre;
+    private String Title;
+    private String ContainerTitle;
+    private String Series;
+    private String Date;
+    private String PageRange;
+
+    public PublicationSearch() {
+    }
+
+    public String getBHLType() {
+        return BHLType;
+    }
+
+    public String getFoundIn() {
+        return FoundIn;
+    }
+
+    public String getVolume() {
+        return Volume;
+    }
+
+    public List<AuthorName> getAuthors() {
+        return Authors;
+    }
+
+    public String getPartUrl() {
+        return PartUrl;
+    }
+
+    public String getPartID() {
+        return PartID;
+    }
+
+    public String getGenre() {
+        return Genre;
+    }
+
+    public String getTitle() {
+        return Title;
+    }
+
+    public String getContainerTitle() {
+        return ContainerTitle;
+    }
+
+    public String getSeries() {
+        return Series;
+    }
+
+    public String getDate() {
+        return Date;
+    }
+
+    public String getPageRange() {
+        return PageRange;
+    }
+
+    @Override
+    public String toString() {
+        return "PublicationSearch [BHLType=" + BHLType + ", FoundIn=" + FoundIn + ", Volume=" + Volume + ", Authors=" + Authors + ", PartUrl=" + PartUrl + ", PartID=" + PartID + ", Genre=" + Genre + ", Title=" + Title + ", ContainerTitle=" + ContainerTitle + ", Series=" + Series + ", Date=" + Date + ", PageRange=" + PageRange + "]";
     }
 
 }
