@@ -57,4 +57,21 @@ class BiodiversityLibraryTest {
         assertFalse(authors.getResult().isEmpty());
     }
 
+    @Test
+    void getAuthorsShouldThrowExceptionTest() throws Exception {
+        assertThrows(Exception.class, () -> {
+            finder.getAuthorMetadata(0, ' ');
+        });
+    }
+
+    @Test
+    void getSubjectMetadataShouldReturnObjWithMetadataTest() throws Exception {
+
+    }
+
+    @Test
+    void getSubjectMetadataShouldThrowExceptionTest() throws Exception {
+
+    }
+
 }
