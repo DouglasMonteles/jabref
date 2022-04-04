@@ -75,6 +75,18 @@ class BiodiversityLibraryTest {
 
     @Test
     void getSubjectMetadataShouldThrowExceptionTest() throws Exception {
+        assertThrows(Exception.class, () -> {
+            finder.getSubjectMetadata("", ' ');
+        });
+    }
+
+    @Test
+    void publicationSearchShouldReturnObjWithMetadataTest() throws Exception {
+
+    }
+
+    @Test
+    void publicationSearchShouldThrowExceptionTest() throws Exception {
 
     }
 
