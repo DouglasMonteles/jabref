@@ -18,6 +18,7 @@ public class BiodiversityLibrary {
     private static final String API_AUTHOR_URL = "https://www.biodiversitylibrary.org/api3?op=GetAuthorMetadata&";
     private static final String API_SUBJECT_URL = "https://www.biodiversitylibrary.org/api3?op=GetSubjectMetadata&";
     private static final String API_PUBLICATION_SEARCH_URL = "https://www.biodiversitylibrary.org/api3?op=PublicationSearch&";
+    private static final String API_AUTHOR_SEARCH_URL = "https://www.biodiversitylibrary.org/api3?op=AuthorSearch&";
     private static final String API_KEY = "35c3b825-b2a5-4fd3-8c58-e16a6862a9fe";
 
     public ResponseAuthorMetadata getAuthorMetadata(int id, char pubs) throws Exception {
@@ -67,6 +68,19 @@ public class BiodiversityLibrary {
         if ((publications != null) && publications.getStatus().equals("ok")) {
             LOGGER.info("getCollections: " + publications.toString());
             return publications;
+        }
+
+        return null;
+    }
+
+    public ResponseAuthorSearch authorSearch(String authorName) throws Exception {
+        var response = this.fetchData(API_AUTHOR_SEARCH_URL + "authorname="
+                                      + authorName + "&format=json&apikey=");
+        var authors = new Gson().fromJson(response.toString(), ResponseAuthorSearch.class);
+
+        if ((authors != null) && authors.getStatus().equals("ok")) {
+            LOGGER.info("getCollections: " + authors.toString());
+            return authors;
         }
 
         return null;
@@ -485,6 +499,62 @@ class PublicationSearch {
     @Override
     public String toString() {
         return "PublicationSearch [BHLType=" + BHLType + ", FoundIn=" + FoundIn + ", Volume=" + Volume + ", Authors=" + Authors + ", PartUrl=" + PartUrl + ", PartID=" + PartID + ", Genre=" + Genre + ", Title=" + Title + ", ContainerTitle=" + ContainerTitle + ", Series=" + Series + ", Date=" + Date + ", PageRange=" + PageRange + "]";
+    }
+
+}
+
+class ResponseAuthorSearch {
+
+    private String Status;
+    private String ErrorMessage;
+    private final List<AuthorSearch> Result = new ArrayList<>();
+
+    public ResponseAuthorSearch() {
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public String getErrorMessage() {
+        return ErrorMessage;
+    }
+
+    public List<AuthorSearch> getResult() {
+        return Result;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseAuthorSearch [Status=" + Status + ", ErrorMessage=" + ErrorMessage + ", Result=" + Result + "]";
+    }
+
+}
+
+class AuthorSearch {
+
+    private String AuthorID;
+    private String Name;
+    private String CreatorUrl;
+
+    public AuthorSearch() {
+    }
+
+    public String getAuthorID() {
+        return AuthorID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public String getCreatorUrl() {
+        return CreatorUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthorSearch [AuthorID=" + AuthorID + ", Name=" + Name + ", CreatorUrl=" + CreatorUrl + "]";
     }
 
 }
