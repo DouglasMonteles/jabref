@@ -82,12 +82,22 @@ class BiodiversityLibraryTest {
 
     @Test
     void publicationSearchShouldReturnObjWithMetadataTest() throws Exception {
+        String searchTerm = "cocos+island+costa+rica+birds";
+        char searchType = 'C';
+        int page = 1, pageSize = 10;
 
+        var publications = finder.publicationSearch(searchTerm, searchType, page, pageSize);
+
+        assertEquals("ok", publications.getStatus());
+        assertEquals("", publications.getErrorMessage());
+        assertFalse(publications.getResult().isEmpty());
     }
 
     @Test
     void publicationSearchShouldThrowExceptionTest() throws Exception {
-
+        assertThrows(Exception.class, () -> {
+            finder.publicationSearch("", ' ', -1, -1);
+        });
     }
 
 }
